@@ -17,6 +17,7 @@ public class AggregatorActor extends UntypedAbstractActor {
 	private Map<String, Integer> fileMap = new ConcurrentHashMap<>();
 	LoggingAdapter logger = Logging.getLogger(getContext().system(), this);
 	private static int mapCount;
+	private static String fileName = null;
 
 	public static Props props() {
 		return Props.create(AggregatorActor.class);
@@ -27,11 +28,13 @@ public class AggregatorActor extends UntypedAbstractActor {
 		if (object instanceof StartOfFileHelper) {
 			StartOfFileHelper helper = (StartOfFileHelper) object;
 			logger.info("Start Activity with: " + helper.getFilePath());
-			Integer tmp = fileMap.get(helper.getFilePath());
+			fileName = helper.getFilePath();
+			Integer tmp = fileMap.get(fileName);
 			if (tmp != null) {
 				throw new RuntimeException("Un-authorized usage of Start Helper Activity");
 			}
 			fileMap.put(helper.getFilePath(), 0);
+			mapCount = fileMap.size();
 		} else if (object instanceof LineHelper) {
 			LineHelper lineHelper = (LineHelper) object;
 			logger.debug("Line Activity with: " + lineHelper.getFileName());
@@ -43,6 +46,7 @@ public class AggregatorActor extends UntypedAbstractActor {
 					temp = line.trim().split(" ").length;
 
 				fileMap.put(lineHelper.getFileName(), counter + temp);
+				mapCount = fileMap.size();
 			} else {
 				throw new RuntimeException("Un-authorized read of file");
 			}
@@ -59,7 +63,7 @@ public class AggregatorActor extends UntypedAbstractActor {
 			fileMap.remove(key);
 			mapCount = fileMap.size();
 			// Processed successfully
-			sender().tell(new SimpleSuccessIndicator(), null);
+			sender().tell(new SimpleSuccessIndicator(), getSelf());
 		} else {
 			throw new RuntimeException("Un-authorized read of file");
 		}
@@ -67,6 +71,10 @@ public class AggregatorActor extends UntypedAbstractActor {
 
 	public static int getMapCount() {
 		return mapCount;
+	}
+
+	public static String getProcessedFileName() {
+		return fileName;
 	}
 
 }

@@ -46,7 +46,7 @@ public class FileParserActor extends UntypedAbstractActor {
 				throw new RuntimeException("Expected format is file only");
 			}
 		} else if (message instanceof SimpleSuccessIndicator) {
-			getContext().system().actorOf(FileScannerActor.props(null)).tell(new SimpleSuccessIndicator(), null);
+			logger.info("Got success message");
 		} else {
 			throw new RuntimeException("Unknown message");
 		}

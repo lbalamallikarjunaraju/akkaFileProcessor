@@ -1,5 +1,6 @@
 package com.fileprocessor.akka.actor;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.typesafe.config.ConfigFactory;
@@ -24,9 +25,13 @@ public class FileScannerActorTest extends TestKit {
 				FileParserActor.props(aggregatorActor));
 		final TestActorRef<Actor> fileScannerActor = TestActorRef.create(system(),
 				FileScannerActor.props(fileParserActor));
-		fileScannerActor.tell(System.getProperty("user.dir") + "/TestData.txt", fileScannerActor);
+
+		String fileName = System.getProperty("user.dir") + "/TestData.txt";
+		fileScannerActor.tell(fileName, fileScannerActor);
+		Assert.assertEquals(AggregatorActor.getMapCount(), 0);
+		Assert.assertEquals(AggregatorActor.getProcessedFileName(), fileName);
 	}
-	
+
 	@Test(expectedExceptions = RuntimeException.class)
 	public void MytestActorWithException() throws InterruptedException {
 		final TestActorRef<Actor> aggregatorActor = TestActorRef.create(system(), AggregatorActor.props());
@@ -34,10 +39,16 @@ public class FileScannerActorTest extends TestKit {
 				FileParserActor.props(aggregatorActor));
 		final TestActorRef<Actor> fileScannerActor = TestActorRef.create(system(),
 				FileScannerActor.props(fileParserActor));
-		
+
 		fileScannerActor.tell(null, aggregatorActor);
+		Assert.assertNull(AggregatorActor.getProcessedFileName());
+		Assert.assertEquals(AggregatorActor.getMapCount(), 0);
 		fileScannerActor.tell(1235, aggregatorActor);
+		Assert.assertNull(AggregatorActor.getProcessedFileName());
+		Assert.assertEquals(AggregatorActor.getMapCount(), 0);
 		fileScannerActor.tell("nodata", aggregatorActor);
+		Assert.assertNull(AggregatorActor.getProcessedFileName());
+		Assert.assertEquals(AggregatorActor.getMapCount(), 0);
 	}
 
 }

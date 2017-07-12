@@ -3,8 +3,6 @@ package com.fileprocessor.akka.actor;
 import java.io.File;
 import java.util.Arrays;
 
-import com.fileprocessor.akka.actorHelpers.SimpleSuccessIndicator;
-
 import akka.actor.ActorRef;
 import akka.actor.OneForOneStrategy;
 import akka.actor.Props;
@@ -52,8 +50,6 @@ public class FileScannerActor extends UntypedAbstractActor {
 			} else {
 				throw new RuntimeException("The path is neither a dir nor a file");
 			}
-		} else if (message instanceof SimpleSuccessIndicator) {
-			logger.info("Got success message");
 		} else {
 			throw new RuntimeException("Unknown message");
 		}
