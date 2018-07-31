@@ -62,13 +62,11 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.6.0.201210061924</version>
-				<!--
+				<version>0.7.9</version>
                 <configuration>
-                    <destFile>${project.build.directory}/jacoco/jacoco.exec</destFile>
-                    <dataFile>${project.build.directory}/jacoco/jacoco.exec</dataFile>
+                    <destFile>${project.build.directory}/jacoco.exec</destFile>
+                    <dataFile>${project.build.directory}/jacoco.exec</dataFile>
                 </configuration>
-                -->
 				<executions>
 					<execution>
 						<id>jacoco-initialize</id>
