@@ -59,6 +59,33 @@
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>3.3.0.603</version>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.6.0.201210061924</version>
+				<!--
+                <configuration>
+                    <destFile>${project.build.directory}/jacoco/jacoco.exec</destFile>
+                    <dataFile>${project.build.directory}/jacoco/jacoco.exec</dataFile>
+                </configuration>
+                -->
+				<executions>
+					<execution>
+						<id>jacoco-initialize</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
